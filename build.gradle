@@ -1,0 +1,48 @@
+buildscript {
+	ext {
+		springBootVersion = '1.5.8.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+		maven { url "http://repo.opensourceagility.com/release/" }
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+plugins {
+	id 'org.springframework.boot' version '2.4.1'
+	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+	id 'java'
+}
+
+apply plugin: 'application'
+apply plugin: 'java'
+
+
+group = 'com.batman'
+version = '0.0.1-SNAPSHOT'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	compile 'com.amazonaws:aws-java-sdk-dynamodb:1.11.34'
+	compile 'com.github.derjust:spring-data-dynamodb:4.3.1'
+
+	compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.7.0'
+	compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.7.0'
+}
+
+
+test {
+	useJUnitPlatform()
+}
+
+// Java cache lock error troubleshoot
+// https://stackoverflow.com/questions/21523508/it-is-currently-in-use-by-another-gradle-instance
