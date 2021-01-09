@@ -1,5 +1,6 @@
 package com.batman.server.exception;
 
-public class ResourceNotFoundException extends RuntimeException {
+public class HTTPMethodNotAllowed extends RuntimeException {
     private static final long serialVersionUID = 1L;
+
 }

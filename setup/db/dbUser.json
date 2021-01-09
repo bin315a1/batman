@@ -4,12 +4,34 @@
     {
       "AttributeName": "id",
       "AttributeType": "S"
+    },
+    {
+      "AttributeName":"email",
+      "AttributeType": "S"
     }
   ],
   "KeySchema": [
     {
       "AttributeName": "id",
       "KeyType": "HASH"
+    }
+  ],
+  "GlobalSecondaryIndexes": [
+    {
+      "IndexName": "Email-index",
+      "Projection": {
+        "ProjectionType": "ALL"
+      },
+      "ProvisionedThroughput": {
+        "WriteCapacityUnits": 5,
+        "ReadCapacityUnits": 10
+      },
+      "KeySchema": [
+        {
+          "AttributeName": "email",
+          "KeyType": "HASH"
+        }
+      ]
     }
   ],
   "ProvisionedThroughput": {

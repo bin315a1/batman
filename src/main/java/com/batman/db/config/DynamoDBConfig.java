@@ -8,12 +8,10 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
-import org.socialsignin.spring.data.dynamodb.repository.config.EnableDynamoDBRepositories;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@EnableDynamoDBRepositories(basePackages = "com.batman.db.repositories", dynamoDBOperationsRef = "dynamoDBOperations")
 @Configuration
 public class DynamoDBConfig {
     @Value("${amazon.dynamodb.endpoint}")
@@ -25,7 +23,6 @@ public class DynamoDBConfig {
 
     @Bean
     public DynamoDBMapper dynamoDBMapper() {
-        System.out.println("endpoint: " + amazonDynamoDBEndpoint);
         final AmazonDynamoDBClient client = new AmazonDynamoDBClient();
         client.setSignerRegionOverride(Regions.fromName(region).getName());
         if (amazonDynamoDBEndpoint != null && !amazonDynamoDBEndpoint.isEmpty()) {
