@@ -1,5 +1,6 @@
 package com.batman.server.exception;
 
-public class BadRequestException extends RuntimeException {
+public class HTTPResourceConflictException extends RuntimeException {
     private static final long serialVersionUID = 1L;
+
 }
