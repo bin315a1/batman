@@ -67,7 +67,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         cal.add(Calendar.DAY_OF_MONTH, SecurityConfig.JWT_EXPIRATION_DAYS);
         Date expires = cal.getTime();
 
-
         String token = JWT.create()
                 .withSubject(((User) authentication.getPrincipal()).getUsername())
                 .withExpiresAt(expires)

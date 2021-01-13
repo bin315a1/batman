@@ -9,5 +9,5 @@ public interface UserService {
     public abstract void validateUser(String email);
     public abstract void createUser(User user, String nonEncryptedPassword);
     public abstract void updateUser(User user);
-    public abstract void deleteUser(String id);
+    public abstract void tester();
 }

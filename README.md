@@ -26,4 +26,9 @@ coming soon
 1. `docker ps`, and copy the container id
 2. `docker exec -it <containerID> /bin/bash`
 
+#### Sample DynamoDB Queries
+1. Scan an entire table
+`aws dynamodb scan --endpoint-url http://localhost:8042/ --table-name dbusers`
+2. Create a table with json input ``
+
 #### 

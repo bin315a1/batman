@@ -5,9 +5,6 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.batman.db.model.DBUser;
 import com.batman.server.dao.UserDao;
-import com.batman.server.exception.HTTPBadRequestException;
-import com.batman.server.exception.HTTPResourceConflictException;
-import com.batman.server.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

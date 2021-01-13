@@ -27,7 +27,6 @@ public class AmazonSecretsManagerConfig {
                 .build();
 
         String secret = "";
-        ByteBuffer binarySecretData;
         GetSecretValueRequest getSecretValueRequest = new GetSecretValueRequest()
                 .withSecretId(secretName).withVersionStage("AWSCURRENT");
         GetSecretValueResult getSecretValueResult = null;

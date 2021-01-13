@@ -2,6 +2,9 @@ package com.batman.server.service.impl;
 
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
 import com.amazonaws.services.simpleemail.model.*;
+import com.amazonaws.services.sqs.AmazonSQS;
+import com.amazonaws.services.sqs.model.SendMessageRequest;
+import com.amazonaws.services.sqs.model.SendMessageResult;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.batman.db.model.DBUser;
@@ -11,6 +14,7 @@ import com.batman.server.exception.*;
 import com.batman.server.model.User;
 import com.batman.server.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,21 +26,14 @@ import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
-    // The subject line for the email.
-    static final String SUBJECT = "Amazon SES test (AWS SDK for Java)";
 
-    // The HTML body for the email.
-    static final String HTMLBODY = "<h1>Amazon SES test (AWS SDK for Java)</h1>"
-            +"<p>Click <a href='http://localhost:9090/validate-email/%s'> here </a>";
-//
-//            + "<p>This email was sent with <a href='https://aws.amazon.com/ses/'>"
-//            + "Amazon SES</a> using the <a href='https://aws.amazon.com/sdk-for-java/'>"
-//            + "AWS SDK for Java</a>"
-//            + "";
+    @Value("${aws.sqs.batman-primary-sqs}")
+    public String PRIMARY_QUEUE_URL;
+    @Value("${aws.ses.sourceEmail}")
+    public String SES_SOURCE_EMAIL;
+    @Value("${aws.ses.destEmail}")
+    public String SES_DEST_EMAIL;
 
-    // The email body for recipients with non-HTML email clients.
-    static final String TEXTBODY = "This email was sent through Amazon SES "
-            + "using the AWS SDK for Java.";
 
     @Autowired
     UserDaoImpl userDao;
@@ -44,6 +41,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     PasswordEncoder passwordEncoder;
     @Autowired
     AmazonSimpleEmailService sesClient;
+    @Autowired
+    AmazonSQS sqsClient;
     @Autowired
     RuntimeProperties runtimeProperties;
 
@@ -75,17 +74,27 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .withClaim("email", email)
                 .sign(Algorithm.HMAC512(runtimeProperties.getJWTSecret()));
 
+        // SES CONFIG
+        // TODO: refactor this code into template
+        // The subject line for the email.
+        String subject = "Amazon SES test (AWS SDK for Java)";
+        // The HTML body for the email.
+        String htmlBody = "<h1>Amazon SES test (AWS SDK for Java)</h1>"
+                +"<p>Click <a href='http://localhost:9090/validate-email/%s'> here </a>";
+        String textBody = "This email was sent through Amazon SES "
+                + "using the AWS SDK for Java.";
+
         SendEmailRequest request = new SendEmailRequest()
-                .withDestination(new Destination().withToAddresses("bin315a1@gmail.com"))
+                .withDestination(new Destination().withToAddresses(SES_DEST_EMAIL))
                 .withMessage(new Message()
                         .withBody(new Body()
                                 .withHtml(new Content()
-                                        .withCharset("UTF-8").withData(String.format(HTMLBODY, authToken)))
+                                        .withCharset("UTF-8").withData(String.format(htmlBody, authToken)))
                                 .withText(new Content()
-                                        .withCharset("UTF-8").withData(TEXTBODY)))
+                                        .withCharset("UTF-8").withData(textBody)))
                         .withSubject(new Content()
-                                .withCharset("UTF-8").withData(SUBJECT)))
-                .withSource("batman.devs@gmail.com");
+                                .withCharset("UTF-8").withData(subject)))
+                .withSource(SES_SOURCE_EMAIL);
 
         sesClient.sendEmail(request);
     }
@@ -130,11 +139,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void deleteUser(String id) {
-        Optional<DBUser> dbUserOptional = userDao.getUserById(id, true);
-        DBUser dbUser = dbUserOptional.orElseThrow(HTTPBadRequestException::new);
-
-        userDao.deleteUser(dbUser);
+    public void tester() {
+        final SendMessageRequest message = new SendMessageRequest(PRIMARY_QUEUE_URL, "tester");
+        message.setMessageGroupId("messageGroup1");
+        message.setMessageDeduplicationId("1");
+        final SendMessageResult res = sqsClient.sendMessage(message);
     }
 
     @Override

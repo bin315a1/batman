@@ -26,9 +26,6 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @Autowired
-    Environment env;
-
     @RequestMapping(value="/users/{id}", method = RequestMethod.GET)
     public ResponseEntity<Object> getUser(@PathVariable("id") String id) {
 
@@ -72,6 +69,12 @@ public class UserController {
 
         userService.createUser(signupRequestWrapper.getUserUpdater(), signupRequestWrapper.getPassword());
         return new ResponseEntity<>("User Created", HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/tester", method = RequestMethod.GET)
+    public ResponseEntity<Object> tester() {
+        userService.tester();
+        return new ResponseEntity<>("Tester", HttpStatus.OK);
     }
 
     // Request Wrappers
